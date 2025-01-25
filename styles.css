@@ -14,6 +14,7 @@
 }
 
 * {
+    -o-user-select: none;
     user-select: none;
 }
 
@@ -27,16 +28,16 @@ body {
 
 button {
     font-family: 'MS Sans Serif';
+    text-align: left;
     font-size: 16px;
     height: 30px;
     width: 100px;
     background-color: #BFBFBF;
     color: black;
-    border: 2px solid;
-    border-top-color: #ffffff;
-    border-left-color: #ffffff;
-    border-bottom-color: #7B7B7B;
-    border-right-color: #7B7B7B;
+    border-bottom: 2px solid #7B7B7B;
+    border-left: 2px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #7B7B7B;
 }
 
 button:hover {
@@ -48,12 +49,13 @@ button:hover {
 #clock {
     font-family: 'MS Sans Serif';
     font-size: 14px;
+    display: inline;
     float: right;
-    border: 1.5px solid;
-    border-top-color: #808080;
-    border-left-color: #808080;
-    border-bottom-color: #FAFAFA;
-    border-right-color: #FAFAFA;
+    border-top: 1.5px solid #808080;
+    border-left: 1.5px solid #808080;
+    border-right: 1.5px solid #FAFAFA;
+    border-bottom: 1.5px solid #FAFAFA;
+    /* height: 28px; */
     width: 200px;
     height: 22px;
     margin: 2px;
@@ -66,35 +68,121 @@ button:hover {
     margin: 80px 10px;
 }
 
+#folder1 {
+    display: inline;
+    padding-right: 10px;
+}
+
+#folder2 {
+    display: inline;
+    padding-right: 10px;
+}
+
+#folder-bar {
+    background-color: #D3CEC4;
+    border: none;
+    text-align: left;
+    padding: 2px 8px;
+}
+
 #footer {
     text-align: center;
     position: fixed;
     height: 36px;
     background-color: #BFBFBF;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
 }
 
+.menu a {
+    font-family: 'MS Sans Serif';
+    color: black;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
+#reset {
+    text-align: center;
+    width: 35px;
+    height: 35px;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #7B7B7B;
+    border-bottom: 2px solid #7B7B7B;
+    border-left: 2px solid #ffffff;
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    font-size: 20px; /* Adjust emoji size if needed */
+}
+
+#reset img, #reset span {
+    display: block;
+    margin: auto;
+}
+
+.revealed {
+    font-family: "Press Start";
+    background-color: #C0C0C0;
+    font-size: 80%;
+    text-align: center;
+    border: none;
+}
+
+#reset:hover {
+    text-align: center;
+    cursor: pointer;
+}
+
+.sidebar {
+    vertical-align: top;
+    max-width: 300px;
+    margin: 0 30px;
+}
 .disabled {
-    background-color: black;
-    pointer-events: none;
-    cursor: not-allowed;
+    background-color: black; /* Make the cell black */
+    pointer-events: none; /* Disable pointer interactions */
+    cursor: not-allowed; /* Show a disabled cursor */
 }
 
 .game-cell {
     height: 20px;
     width: 20px;
-    line-height: 20px;
+    line-height: 20px; /* Align content vertically within the cell */
     text-align: center;
-    overflow: hidden;
+    overflow: hidden; /* Prevent content overflow */
 }
 
 .game-cell img, .game-cell span {
     display: inline-block;
-    max-height: 100%;
+    max-height: 100%; /* Scale the emoji to the cell size */
     max-width: 100%;
-    vertical-align: middle;
+    vertical-align: middle; /* Align emoji in the middle */
+}
+
+#size-btns {
+    float: left;
+    display: inline;
+    margin: 2px;
+  display:none;
+}
+
+#start {
+    float: left;
+}
+
+#status-bar  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2px;
+    margin: 6px;
+    border-top: 2px solid #7B7B7B;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    border-left: 2px solid #7B7B7B;
 }
 
 td {
@@ -103,9 +191,9 @@ td {
     background-color: #C0C0C0;
     border: 1.5px solid;
     border-top-color: #ffffff;
-    border-left-color: #ffffff;
-    border-bottom-color: #7B7B7B;
     border-right-color: #7B7B7B;
+    border-bottom-color: #7B7B7B;
+    border-left-color: #ffffff;
     text-align: center;
     vertical-align: middle;
 }
@@ -113,23 +201,30 @@ td {
 #timer, #bomb-counter {
     font-family: 'Digital Dismay';
     font-size: 35px;
+    letter-spacing: 1px;
     color: red;
     background-color: black;
     text-align: center;
-    padding: 4px;
+    padding: 4px 4px 0 7px;
     line-height: 1em;
 }
 
-#reset {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    border: 2px solid;
-    border-top-color: #ffffff;
-    border-left-color: #ffffff;
-    border-bottom-color: #7B7B7B;
-    border-right-color: #7B7B7B;
-    font-size: 20px;
+#window-controls {
+    float: right;
+    cursor: pointer;
+}
+
+#window-title {
+    font-family: 'MS Sans Serif';
+    letter-spacing: .5px;
+    float: left;
+    color: #D5DEF3;
+    font-size: 16px;
+}
+
+#window-title-bar {
+    background: -moz-linear-gradient(left, rgba(33,41,89,1) 0%, rgba(33,41,89,1) 11%, rgba(80,114,161,1) 56%, rgba(117,172,219,0.7) 92%, rgba(125,185,232,0) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, rgba(33,41,89,1) 0%,rgba(33,41,89,1) 11%,rgba(80,114,161,1) 56%,rgba(117,172,219,0.7) 92%,rgba(125,185,232,0) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, rgba(33,41,89,1) 0%,rgba(33,41,89,1) 11%,rgba(80,114,161,1) 56%,rgba(117,172,219,0.7) 92%,rgba(125,185,232,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#212959', endColorstr='#007db9e8',GradientType=1 ); /* IE6-9 */
 }
