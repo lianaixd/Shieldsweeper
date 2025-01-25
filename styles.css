@@ -86,15 +86,19 @@ button:hover {
 }
 
 #footer {
-    text-align: center;
-    position: fixed;
-    height: 36px;
+    display: flex;
+    justify-content: space-between; /* Space out elements */
+    align-items: center; /* Center items vertically */
     background-color: #BFBFBF;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    margin-bottom: 0px;
+    height: 40px; /* Adjust height */
+    padding: 5px 10px; /* Add padding around the footer content */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
+
+
 
 .menu a {
     font-family: 'MS Sans Serif';
@@ -105,17 +109,15 @@ button:hover {
 }
 
 #reset {
-    text-align: center;
     width: 35px;
     height: 35px;
-    border-top: 2px solid #ffffff;
-    border-right: 2px solid #7B7B7B;
-    border-bottom: 2px solid #7B7B7B;
-    border-left: 2px solid #ffffff;
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically center */
-    justify-content: center; /* Horizontally center */
-    font-size: 20px; /* Adjust emoji size if needed */
+    border: 2px solid #7B7B7B;
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    margin: 0 10px; /* Add some spacing around the button */
+    background-color: #C0C0C0; /* Match board background */
+    font-size: 20px;
 }
 
 #reset img, #reset span {
@@ -173,16 +175,16 @@ button:hover {
     float: left;
 }
 
-#status-bar  {
+#status-bar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 2px;
-    margin: 6px;
-    border-top: 2px solid #7B7B7B;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
-    border-left: 2px solid #7B7B7B;
+    align-items: center; /* Ensure vertical alignment */
+    width: 100%; /* Match the width of the board */
+    padding: 4px; /* Adjust spacing inside the bar */
+    margin: 0 auto; /* Center the bar horizontally */
+    border: 2px solid #7B7B7B;
+    background-color: #D3CEC4; /* Add a background to the bar */
 }
 
 td {
@@ -223,8 +225,10 @@ td {
 }
 
 #window-title-bar {
-    background: -moz-linear-gradient(left, rgba(33,41,89,1) 0%, rgba(33,41,89,1) 11%, rgba(80,114,161,1) 56%, rgba(117,172,219,0.7) 92%, rgba(125,185,232,0) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(left, rgba(33,41,89,1) 0%,rgba(33,41,89,1) 11%,rgba(80,114,161,1) 56%,rgba(117,172,219,0.7) 92%,rgba(125,185,232,0) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to right, rgba(33,41,89,1) 0%,rgba(33,41,89,1) 11%,rgba(80,114,161,1) 56%,rgba(117,172,219,0.7) 92%,rgba(125,185,232,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#212959', endColorstr='#007db9e8',GradientType=1 ); /* IE6-9 */
+    background: linear-gradient(to right, rgba(33, 41, 89, 1) 0%, rgba(33, 41, 89, 1) 11%, rgba(80, 114, 161, 1) 56%, rgba(117, 172, 219, 0.7) 92%, rgba(125, 185, 232, 0) 100%);
+    color: #D5DEF3;
+    font-family: 'MS Sans Serif';
+    font-size: 16px;
+    padding: 5px;
+    border: 2px solid #7B7B7B;
 }
