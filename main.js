@@ -21,13 +21,13 @@ class Cell {
         if (this.row < lastRow && this.col < lastCol) adj.push(board[this.row + 1][this.col + 1]);
         if (this.row < lastRow) adj.push(board[this.row + 1][this.col]);
         if (this.row < lastRow && this.col > 0) adj.push(board[this.row + 1][this.col - 1]);
-        if (this.col > 0) adj.push(board[this.row][this.col - 1]);       
+        if (this.col > 0) adj.push(board[this.row][this.col - 1]);
         return adj;
     }
 
     calcAdjBombs() {
         var adjCells = this.getAdjCells();
-        var adjBombs = adjCells.reduce(function(acc, cell) {
+        var adjBombs = adjCells.reduce(function (acc, cell) {
             return acc + (cell.bomb ? 1 : 0);
         }, 0);
         this.adjBombs = adjBombs;
@@ -49,7 +49,7 @@ class Cell {
         }
         if (this.adjBombs === 0) {
             var adj = this.getAdjCells();
-            adj.forEach(function(cell) {
+            adj.forEach(function (cell) {
                 if (!cell.revealed) cell.reveal();
             });
         }
@@ -60,40 +60,40 @@ class Cell {
 /*----- constants -----*/
 
 const fixedBombPositions = [
-  { row: 0, col: 1 },
-  { row: 2, col: 3 },
-  { row: 2, col: 12 },
-  { row: 3, col: 1 },
-  { row: 4, col: 0 },
-  { row: 5, col: 2 },
-  { row: 4, col: 11 },
-  { row: 6, col: 3 },
-  { row: 6, col: 9 },
-  { row: 7, col: 2 },
-  { row: 7, col: 8 },
-  { row: 9, col: 0 },
-  { row: 9, col: 8 },
-  { row: 10, col: 4 },
-  { row: 11, col: 3 },
-  { row: 12, col: 5 },
+    { row: 0, col: 1 },
+    { row: 2, col: 3 },
+    { row: 2, col: 12 },
+    { row: 3, col: 1 },
+    { row: 4, col: 0 },
+    { row: 5, col: 2 },
+    { row: 4, col: 11 },
+    { row: 6, col: 3 },
+    { row: 6, col: 9 },
+    { row: 7, col: 2 },
+    { row: 7, col: 8 },
+    { row: 9, col: 0 },
+    { row: 9, col: 8 },
+    { row: 10, col: 4 },
+    { row: 11, col: 3 },
+    { row: 12, col: 5 },
 ];
 
 var sizeLookup = {
-  '14': { totalBombs: fixedBombPositions.length, tableWidth: '420px' },
+    '14': { totalBombs: fixedBombPositions.length, tableWidth: '420px' },
 };
 var bombImage = '🗡️';
 var flagImage = '❓';
 
 var colors = [
-  '',
-  '#0000FA',
-  '#4B802D',
-  '#DB1300',
-  '#202081',
-  '#690400',
-  '#457A7A',
-  '#1B1B1B',
-  '#7A7A7A',
+    '',
+    '#0000FA',
+    '#4B802D',
+    '#DB1300',
+    '#202081',
+    '#690400',
+    '#457A7A',
+    '#1B1B1B',
+    '#7A7A7A',
 ];
 
 /*----- app's state (variables) -----*/
@@ -110,19 +110,31 @@ var winner;
 /*----- cached element references -----*/
 var boardEl = document.getElementById('board');
 
-/*----- audio setup -----*/
-const audio = new Audio('tick.wav');
-audio.load(); // Preload the audio
+// Load the audio files
+const tickSound = new Audio('tick.wav');
+const loseSound = new Audio('lose.wav');
+const winSound = new Audio('win.wav');
+
+tickSound.load();
+loseSound.load();
+winSound.load();
+
+// Function to play the appropriate sound
+function playSound(sound) {
+    sound.currentTime = 0; // Reset the sound to the start
+    sound.play().catch((error) => {
+        console.error('Error playing sound:', error);
+    });
+}
 
 /*----- event listeners -----*/
-document.getElementById('size-btns').addEventListener('click', function(e) {
-  size = parseInt(e.target.id.replace('size-', ''));
-  init();
-  render();
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => playSound(tickSound));
 });
 
-boardEl.addEventListener('click', function(e) {
+boardEl.addEventListener('click', function (e) {
     if (winner || hitBomb) return;
+
     var clickedEl = e.target.tagName.toLowerCase() === 'img' ? e.target.parentElement : e.target;
     if (clickedEl.classList.contains('game-cell')) {
         var row = parseInt(clickedEl.dataset.row);
@@ -138,38 +150,38 @@ boardEl.addEventListener('click', function(e) {
         } else {
             hitBomb = cell.reveal();
             if (hitBomb) {
+                // Play lose sound when a bomb is clicked
+                playSound(loseSound);
                 revealAll(row, col);
                 clearInterval(timerId);
                 clickedEl.style.backgroundColor = 'red';
             }
         }
         winner = getWinner();
+        if (winner) {
+            // Play win sound when the player wins
+            playSound(winSound);
+        } else if (!hitBomb) {
+            // Play tick sound for other cell clicks
+            playSound(tickSound);
+        }
         render();
     }
-
-    // Play click sound
-    audio.currentTime = 0; // Reset the audio to the start
-    audio.play().catch((err) => console.error('Audio play error:', err));
 });
 
-document.body.addEventListener('click', () => {
-    // Initialize audio on first interaction to comply with autoplay policies
-    audio.play().catch(() => {});
-}, { once: true });
-
-function createResetListener() { 
-  document.getElementById('reset').addEventListener('click', function() {
-    init();
-    render();
-  });
+function createResetListener() {
+    document.getElementById('reset').addEventListener('click', function () {
+        init();
+        render();
+    });
 }
 
 /*----- functions -----*/
-function setTimer () {
-  timerId = setInterval(function(){
-    elapsedTime += 1;
-    document.getElementById('timer').innerText = elapsedTime.toString().padStart(3, '0');
-  }, 1000);
+function setTimer() {
+    timerId = setInterval(function () {
+        elapsedTime += 1;
+        document.getElementById('timer').innerText = elapsedTime.toString().padStart(3, '0');
+    }, 1000);
 }
 
 function revealAll(clickedRow, clickedCol) {
@@ -181,16 +193,14 @@ function revealAll(clickedRow, clickedCol) {
 }
 
 function buildTable() {
-  var topRow = `
+    var topRow = `
     <tr>
       <td class="menu" id="window-title-bar" colspan="${size}">
         <div id="window-title">🛡️ Shieldsweeper</div>
         <div id="window-controls">🕵️</div>
       </td>
     <tr>
-      <td class="menu" id="folder-bar" colspan="${size}">
-      </td>
-    </tr>
+      <td class="menu" id="folder-bar" colspan="${size}"></td>
     </tr>
       <tr>
         <td class="menu" colspan="${size}">
@@ -202,27 +212,27 @@ function buildTable() {
         </td>
       </tr>
     `;
-  boardEl.innerHTML = topRow + `<tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>`.repeat(size);
-  boardEl.style.width = sizeLookup[size].tableWidth;
-  createResetListener();
-  var cells = Array.from(document.querySelectorAll('td:not(.menu)'));
-  cells.forEach(function(cell, idx) {
-    cell.setAttribute('data-row', Math.floor(idx / size));
-    cell.setAttribute('data-col', idx % size);
-  });
+    boardEl.innerHTML = topRow + `<tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>`.repeat(size);
+    boardEl.style.width = sizeLookup[size].tableWidth;
+    createResetListener();
+    var cells = Array.from(document.querySelectorAll('td:not(.menu)'));
+    cells.forEach(function (cell, idx) {
+        cell.setAttribute('data-row', Math.floor(idx / size));
+        cell.setAttribute('data-col', idx % size);
+    });
 }
 
 function buildArrays() {
-  var arr = Array(size).fill(null);
-  arr = arr.map(function() {
-    return new Array(size).fill(null);
-  });
-  return arr;
+    var arr = Array(size).fill(null);
+    arr = arr.map(function () {
+        return new Array(size).fill(null);
+    });
+    return arr;
 }
 
 function buildCells() {
-    board.forEach(function(rowArr, rowIdx) {
-        rowArr.forEach(function(slot, colIdx) {
+    board.forEach(function (rowArr, rowIdx) {
+        rowArr.forEach(function (slot, colIdx) {
             board[rowIdx][colIdx] = new Cell(rowIdx, colIdx, board);
         });
     });
@@ -252,55 +262,55 @@ function buildCells() {
     });
 
     addBombs();
-    runCodeForAllCells(function(cell) {
+    runCodeForAllCells(function (cell) {
         cell.calcAdjBombs();
     });
 }
 
 function init() {
-  buildTable();
-  board = buildArrays();
-  buildCells();
-  bombCount = getBombCount();
-  elapsedTime = 0;
-  clearInterval(timerId);
-  timerId = null;
-  hitBomb = false;
-  winner = false;
-};
+    buildTable();
+    board = buildArrays();
+    buildCells();
+    bombCount = getBombCount();
+    elapsedTime = 0;
+    clearInterval(timerId);
+    timerId = null;
+    hitBomb = false;
+    winner = false;
+}
 
 function getBombCount() {
-  var count = 0;
-  board.forEach(function(row){
-    count += row.filter(function(cell) {
-      return cell.bomb;
-    }).length
-  });
-  return count;
+    var count = 0;
+    board.forEach(function (row) {
+        count += row.filter(function (cell) {
+            return cell.bomb;
+        }).length;
+    });
+    return count;
 }
 
 function addBombs() {
-  fixedBombPositions.forEach(({ row, col }) => {
-    board[row][col].bomb = true; // Set the bomb property for predefined positions
-  });
+    fixedBombPositions.forEach(({ row, col }) => {
+        board[row][col].bomb = true; // Set the bomb property for predefined positions
+    });
 }
 
 function getWinner() {
-  for (var row = 0; row < board.length; row++) {
-    for (var col = 0; col < board[0].length; col++) {
-      var cell = board[row][col];
-      if (!cell.revealed && !cell.bomb && !cell.disabled) {
-        return false; // Not all active cells are revealed yet
-      }
+    for (var row = 0; row < board.length; row++) {
+        for (var col = 0; col < board[0].length; col++) {
+            var cell = board[row][col];
+            if (!cell.revealed && !cell.bomb && !cell.disabled) {
+                return false; // Not all active cells are revealed yet
+            }
+        }
     }
-  }
-  return true; // All active cells revealed
+    return true; // All active cells revealed
 }
 
 function render() {
     document.getElementById('bomb-counter').innerText = bombCount.toString().padStart(3, '0');
     var tdList = Array.from(document.querySelectorAll('[data-row]'));
-    tdList.forEach(function(td) {
+    tdList.forEach(function (td) {
         var rowIdx = parseInt(td.getAttribute('data-row'));
         var colIdx = parseInt(td.getAttribute('data-col'));
         var cell = board[rowIdx][colIdx];
@@ -336,7 +346,7 @@ function render() {
             keyCell.innerHTML = '<span style="font-size: 16px;">🗝️</span>';
             keyCell.classList.add('revealed'); // Optional: apply revealed styling
         }
-      var shieldCell = document.querySelector('[data-row="8"][data-col="4"]');
+        var shieldCell = document.querySelector('[data-row="8"][data-col="4"]');
         if (shieldCell) {
             shieldCell.innerHTML = '<span style="font-size: 16px;">🛡️</span>';
             shieldCell.classList.add('revealed'); // Optional: apply revealed styling
@@ -345,11 +355,11 @@ function render() {
 }
 
 function runCodeForAllCells(cb) {
-  board.forEach(function(rowArr) {
-    rowArr.forEach(function(cell) {
-      cb(cell);
+    board.forEach(function (rowArr) {
+        rowArr.forEach(function (cell) {
+            cb(cell);
+        });
     });
-  });
 }
 
 init();
