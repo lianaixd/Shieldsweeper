@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.row < lastRow && this.col < lastCol) adj.push(board[this.row + 1][this.col + 1]);
             if (this.row < lastRow) adj.push(board[this.row + 1][this.col]);
             if (this.row < lastRow && this.col > 0) adj.push(board[this.row + 1][this.col - 1]);
-            if (this.col > 0) adj.push(board[this.row][this.col - 1]);
+            if (this.col > 0) adj.push(board[this.row][this.col - 1]);       
             return adj;
         }
 
         calcAdjBombs() {
             var adjCells = this.getAdjCells();
-            var adjBombs = adjCells.reduce(function (acc, cell) {
+            var adjBombs = adjCells.reduce(function(acc, cell) {
                 return acc + (cell.bomb ? 1 : 0);
             }, 0);
             this.adjBombs = adjBombs;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (this.adjBombs === 0) {
                 var adj = this.getAdjCells();
-                adj.forEach(function (cell) {
+                adj.forEach(function(cell) {
                     if (!cell.revealed) cell.reveal();
                 });
             }
@@ -59,10 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /*----- constants -----*/
-// Create a new Audio object for the tick sound
-const tickSound = new Audio('tick.wav'); // Adjust the path if needed
 
-    
     const fixedBombPositions = [
         { row: 0, col: 1 },
         { row: 2, col: 3 },
@@ -116,13 +113,13 @@ const tickSound = new Audio('tick.wav'); // Adjust the path if needed
     var boardEl = document.getElementById('board');
 
     /*----- event listeners -----*/
-    document.getElementById('size-btns').addEventListener('click', function (e) {
+    document.getElementById('size-btns').addEventListener('click', function(e) {
         size = parseInt(e.target.id.replace('size-', ''));
         init();
         render();
     });
 
-    boardEl.addEventListener('click', function (e) {
+    boardEl.addEventListener('click', function(e) {
         if (winner || hitBomb) return;
         var clickedEl = e.target.tagName.toLowerCase() === 'img' ? e.target.parentElement : e.target;
         if (clickedEl.classList.contains('game-cell')) {
@@ -149,16 +146,16 @@ const tickSound = new Audio('tick.wav'); // Adjust the path if needed
         }
     });
 
-    function createResetListener() {
-        document.getElementById('reset').addEventListener('click', function () {
+    function createResetListener() { 
+        document.getElementById('reset').addEventListener('click', function() {
             init();
             render();
         });
     }
 
     /*----- functions -----*/
-    function setTimer() {
-        timerId = setInterval(function () {
+    function setTimer () {
+        timerId = setInterval(function(){
             elapsedTime += 1;
             document.getElementById('timer').innerText = elapsedTime.toString().padStart(3, '0');
         }, 1000);
@@ -174,31 +171,29 @@ const tickSound = new Audio('tick.wav'); // Adjust the path if needed
 
     function buildTable() {
         var topRow = `
-    <tr>
-      <td class="menu" id="window-title-bar" colspan="${size}">
-        <div id="window-title">🛡️ Shieldsweeper</div>
-        <div id="window-controls">🕵️</div>
-      </td>
-    <tr>
-      <td class="menu" id="folder-bar" colspan="${size}">
-      </td>
-    </tr>
-    </tr>
-      <tr>
-        <td class="menu" colspan="${size}">
-            <section id="status-bar">
-              <div id="bomb-counter">000</div>
-              <div id="reset"> 🙂 </div>
-              <div id="timer">000</div>
-            </section>
-        </td>
-      </tr>
-    `;
+            <tr>
+                <td class="menu" id="window-title-bar" colspan="${size}">
+                    <div id="window-title">🛡️ Shieldsweeper</div>
+                    <div id="window-controls">🕵️</div>
+                </td>
+            <tr>
+                <td class="menu" id="folder-bar" colspan="${size}"></td>
+            </tr>
+            <tr>
+                <td class="menu" colspan="${size}">
+                    <section id="status-bar">
+                        <div id="bomb-counter">000</div>
+                        <div id="reset"> 🙂 </div>
+                        <div id="timer">000</div>
+                    </section>
+                </td>
+            </tr>
+        `;
         boardEl.innerHTML = topRow + `<tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>`.repeat(size);
         boardEl.style.width = sizeLookup[size].tableWidth;
         createResetListener();
         var cells = Array.from(document.querySelectorAll('td:not(.menu)'));
-        cells.forEach(function (cell, idx) {
+        cells.forEach(function(cell, idx) {
             cell.setAttribute('data-row', Math.floor(idx / size));
             cell.setAttribute('data-col', idx % size);
         });
@@ -206,31 +201,19 @@ const tickSound = new Audio('tick.wav'); // Adjust the path if needed
 
     function buildArrays() {
         var arr = Array(size).fill(null);
-        arr = arr.map(function () {
+        arr = arr.map(function() {
             return new Array(size).fill(null);
         });
         return arr;
     }
 
     function buildCells() {
-        board.forEach(function (rowArr, rowIdx) {
-            rowArr.forEach(function (slot, colIdx) {
+        board.forEach(function(rowArr, rowIdx) {
+            rowArr.forEach(function(slot, colIdx) {
                 board[rowIdx][colIdx] = new Cell(rowIdx, colIdx, board);
             });
         });
 
-function playTickSound() {
-    tickSound.currentTime = 0; // Reset the sound to the start
-    tickSound.play();
-}
-
-// Add an event listener to all buttons
-document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-        playTickSound();
-    });
-});
-        
         // Disable specific cells
         const disabledCells = [
             { row: 0, cols: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
@@ -256,8 +239,16 @@ document.querySelectorAll('button').forEach(button => {
         });
 
         addBombs();
-        runCodeForAllCells(function (cell) {
+        runCodeForAllCells(function(cell) {
             cell.calcAdjBombs();
+        });
+
+        board.forEach((rowArr, rowIdx) => {
+            rowArr.forEach((cell, colIdx) => {
+                if (cell.bomb && cell.disabled) {
+                    console.error(`Bomb placed in disabled cell: row ${rowIdx}, col ${colIdx}`);
+                }
+            });
         });
     }
 
@@ -275,8 +266,8 @@ document.querySelectorAll('button').forEach(button => {
 
     function getBombCount() {
         var count = 0;
-        board.forEach(function (row) {
-            count += row.filter(function (cell) {
+        board.forEach(function(row){
+            count += row.filter(function(cell) {
                 return cell.bomb;
             }).length;
         });
@@ -304,7 +295,7 @@ document.querySelectorAll('button').forEach(button => {
     function render() {
         document.getElementById('bomb-counter').innerText = bombCount.toString().padStart(3, '0');
         var tdList = Array.from(document.querySelectorAll('[data-row]'));
-        tdList.forEach(function (td) {
+        tdList.forEach(function(td) {
             var rowIdx = parseInt(td.getAttribute('data-row'));
             var colIdx = parseInt(td.getAttribute('data-col'));
             var cell = board[rowIdx][colIdx];
@@ -349,14 +340,28 @@ document.querySelectorAll('button').forEach(button => {
     }
 
     function runCodeForAllCells(cb) {
-        board.forEach(function (rowArr) {
-            rowArr.forEach(function (cell) {
+        board.forEach(function(rowArr) {
+            rowArr.forEach(function(cell) {
                 cb(cell);
             });
         });
     }
 
-    // Initialize the game
+    // Sound effect setup
+    const tickSound = new Audio('tick.wav');
+
+    function playTickSound() {
+        if (!tickSound.paused) {
+            tickSound.currentTime = 0;
+        }
+        tickSound.play();
+    }
+
+    // Attach sound to button clicks
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', playTickSound);
+    });
+
     init();
     render();
 });
