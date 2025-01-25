@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Preload the audio file
+const audio = new Audio('tick.wav');
+audio.load(); // Preload the file to reduce latency
     /*----- classes -----*/
     class Cell {
         constructor(row, col, board) {
