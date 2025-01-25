@@ -59,7 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /*----- constants -----*/
+// Create a new Audio object for the tick sound
+const tickSound = new Audio('tick.wav'); // Adjust the path if needed
 
+    
     const fixedBombPositions = [
         { row: 0, col: 1 },
         { row: 2, col: 3 },
@@ -216,6 +219,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+function playTickSound() {
+    tickSound.currentTime = 0; // Reset the sound to the start
+    tickSound.play();
+}
+
+// Add an event listener to all buttons
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+        playTickSound();
+    });
+});
+        
         // Disable specific cells
         const disabledCells = [
             { row: 0, cols: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
