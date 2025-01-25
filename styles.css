@@ -1,0 +1,135 @@
+@font-face {
+    font-family: "Digital Dismay";
+    src: url("./digital-dismay.otf") format("truetype");
+}
+
+@font-face {
+    font-family: "Press Start";
+    src: url("./prstart.ttf");
+}
+
+@font-face {
+    font-family: "MS Sans Serif";
+    src: url("./micross.ttf");
+}
+
+* {
+    user-select: none;
+}
+
+body {
+    background-color: #0D8584;
+}
+
+#board {
+    background-color: lightgray;
+}
+
+button {
+    font-family: 'MS Sans Serif';
+    font-size: 16px;
+    height: 30px;
+    width: 100px;
+    background-color: #BFBFBF;
+    color: black;
+    border: 2px solid;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-bottom-color: #7B7B7B;
+    border-right-color: #7B7B7B;
+}
+
+button:hover {
+    background-color: lightgray;
+    color: slategray;
+    cursor: pointer;
+}
+
+#clock {
+    font-family: 'MS Sans Serif';
+    font-size: 14px;
+    float: right;
+    border: 1.5px solid;
+    border-top-color: #808080;
+    border-left-color: #808080;
+    border-bottom-color: #FAFAFA;
+    border-right-color: #FAFAFA;
+    width: 200px;
+    height: 22px;
+    margin: 2px;
+    padding: 5px;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: center;
+    margin: 80px 10px;
+}
+
+#footer {
+    text-align: center;
+    position: fixed;
+    height: 36px;
+    background-color: #BFBFBF;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.disabled {
+    background-color: black;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.game-cell {
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.game-cell img, .game-cell span {
+    display: inline-block;
+    max-height: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+td {
+    height: 20px;
+    width: 20px;
+    background-color: #C0C0C0;
+    border: 1.5px solid;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-bottom-color: #7B7B7B;
+    border-right-color: #7B7B7B;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#timer, #bomb-counter {
+    font-family: 'Digital Dismay';
+    font-size: 35px;
+    color: red;
+    background-color: black;
+    text-align: center;
+    padding: 4px;
+    line-height: 1em;
+}
+
+#reset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border: 2px solid;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-bottom-color: #7B7B7B;
+    border-right-color: #7B7B7B;
+    font-size: 20px;
+}
