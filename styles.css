@@ -179,12 +179,13 @@ button:hover {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center; /* Ensure vertical alignment */
-    width: 100%; /* Match the width of the board */
-    padding: 4px; /* Adjust spacing inside the bar */
+    align-items: center;
+    width: calc(100% - 10px); /* Adjust to fit within the parent container */
+    padding: 4px;
     margin: 0 auto; /* Center the bar horizontally */
     border: 2px solid #7B7B7B;
-    background-color: #D3CEC4; /* Add a background to the bar */
+    background-color: #D3CEC4;
+    box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
 td {
