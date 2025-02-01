@@ -19,7 +19,8 @@
 }
 
 body {
-    background-color: #0D8584;
+      background: url('wallpaper.png') no-repeat center center;
+    background-size: cover;
 }
 
 #board {
