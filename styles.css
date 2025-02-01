@@ -20,7 +20,7 @@
 
 body {
       background: url('wallpaper.png') no-repeat center center;
-    background-size: fill;
+    background-size: auto;
 }
 
 #board {
