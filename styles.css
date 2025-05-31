@@ -1,27 +1,29 @@
 @font-face {
-    font-family: "Digital Dismay";
-    src: url("./digital-dismay.otf") format("truetype");
+  font-family: "Digital Dismay";
+  src: url("./digital-dismay.otf") format("truetype");
 }
-
 @font-face {
-    font-family: "Press Start";
-    src: url("./prstart.ttf");
+  font-family: "Press Start";
+  src: url("./prstart.ttf");
 }
-
 @font-face {
-    font-family: "MS Sans Serif";
-    src: url("./micross.ttf");
+  font-family: "MS Sans Serif";
+  src: url("./micross.ttf");
 }
 
 * {
-    -o-user-select: none;
-    user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-      background: url('wallpaper.png') no-repeat center center;
-   
+  background-color: #0d8584;
+  font-family: "MS Sans Serif", sans-serif;
 }
+
 /* Center board, allow horizontal scroll on narrow viewports */
 .flex-container {
   display: flex;
@@ -36,214 +38,162 @@ body {
   width: 100%;            /* fill available width */
   max-width: 100%;        /* ensure it never overflows viewport */
 }
+
+/* The board table itself */
 #board {
-    background-color: lightgray;
+  background-color: lightgray;
+  border-collapse: collapse;
+  margin: 0 auto;
 }
 
-button {
-    font-family: 'MS Sans Serif';
-    text-align: left;
-    font-size: 16px;
-    height: 30px;
-    width: 100px;
-    background-color: #BFBFBF;
-    color: black;
-    border-bottom: 2px solid #7B7B7B;
-    border-left: 2px solid #ffffff;
-    border-top: 2px solid #ffffff;
-    border-right: 2px solid #7B7B7B;
-}
-
-button:hover {
-    background-color: lightgray;
-    color: slategray;
-    cursor: pointer;
-}
-
-#clock {
-    font-family: 'MS Sans Serif';
-    font-size: 14px;
-    display: inline;
-    float: right;
-    border-top: 1.5px solid #808080;
-    border-left: 1.5px solid #808080;
-    border-right: 1.5px solid #FAFAFA;
-    border-bottom: 1.5px solid #FAFAFA;
-    /* height: 28px; */
-    width: 200px;
-    height: 22px;
-    margin: 2px;
-    padding: 5px;
-}
-
-.flex-container {
-    display: flex;
-    justify-content: center;
-    margin: 80px 10px;
-}
-
-#folder1 {
-    display: inline;
-    padding-right: 10px;
-}
-
-#folder2 {
-    display: inline;
-    padding-right: 10px;
-}
-
-#folder-bar {
-    background-color: #D3CEC4;
-    border: none;
-    text-align: left;
-    padding: 2px 8px;
-}
-
-#footer {
-    display: flex;
-    justify-content: space-between; /* Space out elements */
-    align-items: center; /* Center items vertically */
-    background-color: #BFBFBF;
-    height: 40px; /* Adjust height */
-    padding: 5px 10px; /* Add padding around the footer content */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-
-
-.menu a {
-    font-family: 'MS Sans Serif';
-    color: black;
-    text-decoration: none;
-    font-size: 14px;
-    letter-spacing: 0;
-}
-
-#reset {
-    width: 35px;
-    height: 35px;
-    border: 2px solid #7B7B7B;
-    display: flex;
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
-    margin: 0 10px; /* Add some spacing around the button */
-    background-color: #C0C0C0; /* Match board background */
-    font-size: 20px;
-}
-
-#reset img, #reset span {
-    display: block;
-    margin: auto;
-}
-
-.revealed {
-    font-family: "Press Start";
-    background-color: #C0C0C0;
-    font-size: 80%;
-    text-align: center;
-    border: none;
-}
-
-#reset:hover {
-    text-align: center;
-    cursor: pointer;
-}
-
-.sidebar {
-    vertical-align: top;
-    max-width: 300px;
-    margin: 0 30px;
-}
-.disabled {
-    background-color: black; /* Make the cell black */
-    pointer-events: none; /* Disable pointer interactions */
-    cursor: not-allowed; /* Show a disabled cursor */
+/* Each game cell is 20×20 px */
+td {
+  height: 20px;
+  width: 20px;
+  background-color: #c0c0c0;
+  border: 1.5px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #7b7b7b;
+  border-right-color: #7b7b7b;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
 }
 
 .game-cell {
-    height: 20px;
-    width: 20px;
-    line-height: 20px; /* Align content vertically within the cell */
-    text-align: center;
-    overflow: hidden; /* Prevent content overflow */
+  line-height: 20px; /* center content vertically */
+  overflow: hidden;
 }
 
-.game-cell img, .game-cell span {
-    display: inline-block;
-    max-height: 100%; /* Scale the emoji to the cell size */
-    max-width: 100%;
-    vertical-align: middle; /* Align emoji in the middle */
+.game-cell img,
+.game-cell span {
+  display: inline-block;
+  max-height: 100%;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.disabled {
+  background-color: black !important;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.revealed {
+  font-family: "Press Start";
+  background-color: #c0c0c0;
+  font-size: 80%;
+  text-align: center;
+  border: none !important;
 }
 
 #size-btns {
-    float: left;
-    display: inline;
-    margin: 2px;
-  display:none;
+  display: none; /* hide size buttons if desired */
+}
+
+#footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #bfbfbf;
+  height: 40px;
+  padding: 0 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 14px;
 }
 
 #start {
-    float: left;
+  float: left;
+  padding-left: 10px;
+}
+
+#clock {
+  float: right;
+  font-family: "MS Sans Serif";
+  font-size: 14px;
+  border-top: 1.5px solid #808080;
+  border-left: 1.5px solid #808080;
+  border-bottom: 1.5px solid #fafafa;
+  border-right: 1.5px solid #fafafa;
+  width: 200px;
+  height: 22px;
+  margin: 2px;
+  padding: 5px;
+}
+
+#reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #7b7b7b;
+  border-right: 2px solid #7b7b7b;
+  background-color: #c0c0c0;
+  font-size: 20px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+#reset:hover {
+  text-align: center;
+  cursor: pointer;
 }
 
 #status-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: calc(100% - 10px); /* Adjust to fit within the parent container */
-    padding: 4px;
-    margin: 0 auto; /* Center the bar horizontally */
-    border: 2px solid #7B7B7B;
-    background-color: #D3CEC4;
-    box-sizing: border-box; /* Ensure padding is included in the width */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px;
+  margin: 6px auto;
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
 }
 
-td {
-    height: 20px;
-    width: 20px;
-    background-color: #C0C0C0;
-    border: 1.5px solid;
-    border-top-color: #ffffff;
-    border-right-color: #7B7B7B;
-    border-bottom-color: #7B7B7B;
-    border-left-color: #ffffff;
-    text-align: center;
-    vertical-align: middle;
-}
-
-#timer, #bomb-counter {
-    font-family: 'Digital Dismay';
-    font-size: 35px;
-    letter-spacing: 1px;
-    color: red;
-    background-color: black;
-    text-align: center;
-    padding: 4px 4px 0 7px;
-    line-height: 1em;
-}
-
-#window-controls {
-    float: right;
-    cursor: pointer;
-}
-
-#window-title {
-    font-family: 'MS Sans Serif';
-    letter-spacing: .5px;
-    float: left;
-    color: #D5DEF3;
-    font-size: 16px;
+#timer,
+#bomb-counter {
+  font-family: "Digital Dismay";
+  font-size: 35px;
+  letter-spacing: 1px;
+  color: red;
+  background-color: black;
+  text-align: center;
+  padding: 4px 4px 0 7px;
+  line-height: 1em;
 }
 
 #window-title-bar {
-    background: linear-gradient(to right, rgba(33, 41, 89, 1) 0%, rgba(33, 41, 89, 1) 11%, rgba(80, 114, 161, 1) 56%, rgba(117, 172, 219, 0.7) 92%, rgba(125, 185, 232, 0) 100%);
-    color: #D5DEF3;
-    font-family: 'MS Sans Serif';
-    font-size: 16px;
-    padding: 5px;
-    border: 2px solid #7B7B7B;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(
+    to right,
+    rgba(33, 41, 89, 1) 0%,
+    rgba(33, 41, 89, 1) 11%,
+    rgba(80, 114, 161, 1) 56%,
+    rgba(117, 172, 219, 0.7) 92%,
+    rgba(125, 185, 232, 0) 100%
+  );
+  color: #d5def3;
+  padding: 5px;
+  border: 2px solid #7b7b7b;
+}
+
+#window-controls {
+  cursor: pointer;
+}
+
+#window-title {
+  font-family: "MS Sans Serif";
+  letter-spacing: 0.5px;
+  color: #d5def3;
+  font-size: 16px;
 }
