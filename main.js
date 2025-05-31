@@ -476,6 +476,14 @@ function setTimer() {
   }, 1000);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  // If device is “non‐touch” (desktop), override to "Shift + Click"
+  if (!("ontouchstart" in window) && navigator.maxTouchPoints === 0) {
+    document.getElementById("clock").innerHTML =
+      `<em>"Shift + Click"</em> to place a ❓`;
+  }
+  init();
+});
 /*————————————————————————————————————————————————————————
   INITIALIZE THE VERY FIRST GAME
 ————————————————————————————————————————————————————————*/
