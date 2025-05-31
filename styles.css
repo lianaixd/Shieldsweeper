@@ -22,7 +22,20 @@ body {
       background: url('wallpaper.png') no-repeat center center;
    
 }
+/* Center board, allow horizontal scroll on narrow viewports */
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto; /* smaller margin for mobile */
+  padding: 0 10px;   /* keep a bit of side padding */
+}
 
+.game-board {
+  overflow-x: auto;       /* MOBILE: allow horizontal scroll */
+  width: 100%;            /* fill available width */
+  max-width: 100%;        /* ensure it never overflows viewport */
+}
 #board {
     background-color: lightgray;
 }
