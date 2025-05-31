@@ -1,3 +1,8 @@
+/*-------------------------------------
+  styles.css
+-------------------------------------*/
+
+/* Keep your custom fonts */
 @font-face {
   font-family: "Digital Dismay";
   src: url("./digital-dismay.otf") format("truetype");
@@ -11,6 +16,7 @@
   src: url("./micross.ttf");
 }
 
+/* Disable text selection & reset margin/padding */
 * {
   -o-user-select: none;
   user-select: none;
@@ -19,84 +25,71 @@
   box-sizing: border-box;
 }
 
+/* Your original body background was an image */
 body {
-  background-color: #0d8584;
+  background: url('wallpaper.png') no-repeat center center;
+  background-size: cover;
   font-family: "MS Sans Serif", sans-serif;
 }
 
-/* Container that holds the board; flex→center children */
+/* The flex-container should center .game-board horizontally */
 .flex-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 20px auto;
-  padding: 0 10px;
+  align-items: flex-start; /* allow the fixed header to sit at top */
+  margin: 80px 10px; /* same as before */
 }
 
-/* The board area: inline-block so it shrink-wraps, with only horizontal scroll if needed */
+/* .game-board must shrink-wrap its table, but allow horizontal scroll on small screens */
 .game-board {
   display: inline-block;
-  overflow-x: auto;
+  overflow-x: auto; /* enable horizontal scrolling if too wide */
 }
 
-/* The actual table: auto‐width by default (size*20px cells) */
+/* The table itself */
 #board {
   background-color: lightgray;
-  border-collapse: collapse;
+  border-collapse: collapse; /* no gaps between cells */
 }
 
-/* Each cell is exactly 20×20 px */
+/* Each cell is exactly 20×20px with the same borders you had before */
 td {
   height: 20px;
   width: 20px;
-  background-color: #c0c0c0;
+  background-color: #C0C0C0;
   border: 1.5px solid;
   border-top-color: #ffffff;
   border-left-color: #ffffff;
-  border-bottom-color: #7b7b7b;
-  border-right-color: #7b7b7b;
+  border-bottom-color: #7B7B7B;
+  border-right-color: #7B7B7B;
   text-align: center;
   vertical-align: middle;
   padding: 0;
+}
+
+/* If a cell is revealed, use that “Press Start” font & remove border */
+.revealed {
+  font-family: "Press Start";
+  background-color: #C0C0C0;
+  border: none !important;
   font-size: 80%;
 }
 
-.game-cell {
-  line-height: 20px;
-  overflow: hidden;
-}
+/* If a cell is flagged, we’ll insert flagImage via innerHTML in JS */
 
-.game-cell img,
-.game-cell span {
-  display: inline-block;
-  max-height: 100%;
-  max-width: 100%;
-  vertical-align: middle;
-}
-
+/* Disabled cells remain black and non-clickable */
 .disabled {
   background-color: black !important;
   pointer-events: none;
   cursor: not-allowed;
 }
 
-.revealed {
-  font-family: "Press Start";
-  background-color: #c0c0c0;
-  border: none !important;
-}
-
-/* Hide size‐buttons if not used */
-#size-btns {
-  display: none;
-}
-
-/* FOOTER (fixed to bottom) */
+/* The footer (fixed to bottom) */
 #footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #bfbfbf;
+  background-color: #BFBFBF;
   height: 40px;
   padding: 0 10px;
   position: fixed;
@@ -106,62 +99,72 @@ td {
   font-size: 14px;
 }
 
-/* “Start” hat icon */
+/* “Start” hat icon on left of footer */
 #start {
   float: left;
-  padding-left: 10px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
-/* Clock / hint box */
+/* size buttons are hidden per your GitHub code */
+#size-btns {
+  float: left;
+  display: none;
+}
+
+/* The shift/long-press hint box */
 #clock {
-  float: right;
   font-family: "MS Sans Serif";
   font-size: 14px;
+  display: inline-block;
   border-top: 1.5px solid #808080;
   border-left: 1.5px solid #808080;
-  border-bottom: 1.5px solid #fafafa;
-  border-right: 1.5px solid #fafafa;
+  border-bottom: 1.5px solid #FAFAFA;
+  border-right: 1.5px solid #FAFAFA;
   width: 200px;
   height: 22px;
   margin: 2px;
   padding: 5px;
 }
 
-/* Reset face button */
+/* Reset face button “🙂/😎/😵” */
 #reset {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 35px;
   height: 35px;
   border-top: 2px solid #ffffff;
   border-left: 2px solid #ffffff;
-  border-bottom: 2px solid #7b7b7b;
-  border-right: 2px solid #7b7b7b;
-  background-color: #c0c0c0;
+  border-bottom: 2px solid #7B7B7B;
+  border-right: 2px solid #7B7B7B;
+  background-color: #C0C0C0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   margin: 0 10px;
   cursor: pointer;
 }
+
 #reset:hover {
   cursor: pointer;
 }
 
-/* Status bar inside the header */
+/* Status bar inside the table’s header row */
 #status-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2px;
-  margin: 6px auto;
-  border-top: 2px solid #7b7b7b;
-  border-left: 2px solid #7b7b7b;
+  width: calc(100% - 10px); /* fit inside parent <td> */
+  padding: 4px;
+  margin: 0 auto;
+  border-top: 2px solid #7B7B7B;
+  border-left: 2px solid #7B7B7B;
   border-bottom: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
-  width: calc(100% - 10px);
+  background-color: #D3CEC4;
   box-sizing: border-box;
 }
 
+/* Bomb‐counter and timer numbers */
 #timer,
 #bomb-counter {
   font-family: "Digital Dismay";
@@ -174,7 +177,7 @@ td {
   line-height: 1em;
 }
 
-/* Window title bar styling */
+/* Menu bar row (gradient + title + controls) */
 #window-title-bar {
   display: flex;
   justify-content: space-between;
@@ -187,18 +190,24 @@ td {
     rgba(117, 172, 219, 0.7) 92%,
     rgba(125, 185, 232, 0) 100%
   );
-  color: #d5def3;
-  padding: 5px;
-  border: 2px solid #7b7b7b;
-}
-
-#window-controls {
-  cursor: pointer;
-}
-
-#window-title {
+  color: #D5DEF3;
   font-family: "MS Sans Serif";
-  letter-spacing: 0.5px;
-  color: #d5def3;
   font-size: 16px;
+  padding: 5px;
+  border: 2px solid #7B7B7B;
+  /* Ensures the bar spans the full width of the table cell */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Title text on the left of that gradient bar */
+#window-title {
+  float: left;
+  letter-spacing: 0.5px;
+}
+
+/* Controls icon on the right of that gradient bar */
+#window-controls {
+  float: right;
+  cursor: pointer;
 }
