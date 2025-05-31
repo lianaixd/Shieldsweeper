@@ -1,4 +1,4 @@
-/*----- classes -----*/
+ /*----- classes -----*/
 class Cell {
     constructor(row, col, board) {
         this.row = row;
@@ -193,27 +193,26 @@ function revealAll(clickedRow, clickedCol) {
 }
 
 function buildTable() {
-   var topRow = `
-<tr>
-  <td class="menu" id="window-title-bar" colspan="${size}">
-    <div id="window-title">🛡️ Shieldsweeper</div>
-    <div id="window-controls">🕵️</div>
-  </td>
-</tr>
-<tr>
-  <td class="menu" id="folder-bar" colspan="${size}"></td>
-</tr>
-<tr>
-  <td class="menu" colspan="${size}">
-    <section id="status-bar">
-      <div id="bomb-counter">000</div>
-      <div id="reset"> 🙂 </div>
-      <div id="timer">000</div>
-    </section>
-  </td>
-</tr>
-`;
-    boardEl.innerHTML = topRow + <tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>.repeat(size);
+    var topRow = `
+    <tr>
+      <td class="menu" id="window-title-bar" colspan="${size}">
+        <div id="window-title">🛡️ Shieldsweeper</div>
+        <div id="window-controls">🕵️</div>
+      </td>
+    <tr>
+      <td class="menu" id="folder-bar" colspan="${size}"></td>
+    </tr>
+      <tr>
+        <td class="menu" colspan="${size}">
+            <section id="status-bar">
+              <div id="bomb-counter">000</div>
+              <div id="reset"> 🙂 </div>
+              <div id="timer">000</div>
+            </section>
+        </td>
+      </tr>
+    `;
+    boardEl.innerHTML = topRow + `<tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>`.repeat(size);
     boardEl.style.width = sizeLookup[size].tableWidth;
     createResetListener();
     var cells = Array.from(document.querySelectorAll('td:not(.menu)'));
