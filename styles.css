@@ -24,29 +24,28 @@ body {
   font-family: "MS Sans Serif", sans-serif;
 }
 
-/* Center board, allow horizontal scroll on narrow viewports */
+/* Container that holds the board; flex→center children */
 .flex-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px auto; /* smaller margin for mobile */
-  padding: 0 10px;   /* keep a bit of side padding */
+  margin: 20px auto;
+  padding: 0 10px;
 }
 
+/* The board area: inline-block so it shrink-wraps, with only horizontal scroll if needed */
 .game-board {
-  overflow-x: auto;       /* MOBILE: allow horizontal scroll */
-  width: 100%;            /* fill available width */
-  max-width: 100%;        /* ensure it never overflows viewport */
+  display: inline-block;
+  overflow-x: auto;
 }
 
-/* The board table itself */
+/* The actual table: auto‐width by default (size*20px cells) */
 #board {
   background-color: lightgray;
   border-collapse: collapse;
-  margin: 0 auto;
 }
 
-/* Each game cell is 20×20 px */
+/* Each cell is exactly 20×20 px */
 td {
   height: 20px;
   width: 20px;
@@ -59,10 +58,11 @@ td {
   text-align: center;
   vertical-align: middle;
   padding: 0;
+  font-size: 80%;
 }
 
 .game-cell {
-  line-height: 20px; /* center content vertically */
+  line-height: 20px;
   overflow: hidden;
 }
 
@@ -83,15 +83,15 @@ td {
 .revealed {
   font-family: "Press Start";
   background-color: #c0c0c0;
-  font-size: 80%;
-  text-align: center;
   border: none !important;
 }
 
+/* Hide size‐buttons if not used */
 #size-btns {
-  display: none; /* hide size buttons if desired */
+  display: none;
 }
 
+/* FOOTER (fixed to bottom) */
 #footer {
   display: flex;
   justify-content: space-between;
@@ -106,11 +106,13 @@ td {
   font-size: 14px;
 }
 
+/* “Start” hat icon */
 #start {
   float: left;
   padding-left: 10px;
 }
 
+/* Clock / hint box */
 #clock {
   float: right;
   font-family: "MS Sans Serif";
@@ -125,6 +127,7 @@ td {
   padding: 5px;
 }
 
+/* Reset face button */
 #reset {
   display: flex;
   align-items: center;
@@ -140,12 +143,11 @@ td {
   margin: 0 10px;
   cursor: pointer;
 }
-
 #reset:hover {
-  text-align: center;
   cursor: pointer;
 }
 
+/* Status bar inside the header */
 #status-bar {
   display: flex;
   justify-content: space-between;
@@ -156,6 +158,8 @@ td {
   border-left: 2px solid #7b7b7b;
   border-bottom: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
+  width: calc(100% - 10px);
+  box-sizing: border-box;
 }
 
 #timer,
@@ -170,6 +174,7 @@ td {
   line-height: 1em;
 }
 
+/* Window title bar styling */
 #window-title-bar {
   display: flex;
   justify-content: space-between;
