@@ -199,6 +199,7 @@ function buildTable() {
         <div id="window-title">🛡️ Shieldsweeper</div>
         <div id="window-controls">🕵️</div>
       </td>
+        </tr>
     <tr>
       <td class="menu" id="folder-bar" colspan="${size}"></td>
     </tr>
