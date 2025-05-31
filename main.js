@@ -213,7 +213,8 @@ function buildTable() {
         </td>
       </tr>
     ` ;
-    boardEl.innerHTML = topRow + <tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>.repeat(size);
+    boardEl.innerHTML = topRow 
+    + `<tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>`.repeat(size);
     boardEl.style.width = sizeLookup[size].tableWidth;
     createResetListener();
     var cells = Array.from(document.querySelectorAll('td:not(.menu)'));
