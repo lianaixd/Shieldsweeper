@@ -1,213 +1,234 @@
-/*-------------------------------------
-  styles.css
--------------------------------------*/
-
-/* Keep your custom fonts */
 @font-face {
-  font-family: "Digital Dismay";
-  src: url("./digital-dismay.otf") format("truetype");
-}
-@font-face {
-  font-family: "Press Start";
-  src: url("./prstart.ttf");
-}
-@font-face {
-  font-family: "MS Sans Serif";
-  src: url("./micross.ttf");
+    font-family: "Digital Dismay";
+    src: url("./digital-dismay.otf") format("truetype");
 }
 
-/* Disable text selection & reset margin/padding */
+@font-face {
+    font-family: "Press Start";
+    src: url("./prstart.ttf");
+}
+
+@font-face {
+    font-family: "MS Sans Serif";
+    src: url("./micross.ttf");
+}
+
 * {
-  -o-user-select: none;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    -o-user-select: none;
+    user-select: none;
 }
 
-/* Your original body background was an image */
 body {
-  background: url('wallpaper.png') no-repeat center center;
-  background-size: cover;
-  font-family: "MS Sans Serif", sans-serif;
+      background: url('wallpaper.png') no-repeat center center;
+   
 }
 
-/* The flex-container should center .game-board horizontally */
-.flex-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* allow the fixed header to sit at top */
-  margin: 80px 10px; /* same as before */
-}
-
-/* .game-board must shrink-wrap its table, but allow horizontal scroll on small screens */
-.game-board {
-  display: inline-block;
-  overflow-x: auto; /* enable horizontal scrolling if too wide */
-}
-
-/* The table itself */
 #board {
-  background-color: lightgray;
-  border-collapse: collapse; /* no gaps between cells */
+    background-color: lightgray;
 }
 
-/* Each cell is exactly 20×20px with the same borders you had before */
-td {
-  height: 20px;
-  width: 20px;
-  background-color: #C0C0C0;
-  border: 1.5px solid;
-  border-top-color: #ffffff;
-  border-left-color: #ffffff;
-  border-bottom-color: #7B7B7B;
-  border-right-color: #7B7B7B;
-  text-align: center;
-  vertical-align: middle;
-  padding: 0;
+button {
+    font-family: 'MS Sans Serif';
+    text-align: left;
+    font-size: 16px;
+    height: 30px;
+    width: 100px;
+    background-color: #BFBFBF;
+    color: black;
+    border-bottom: 2px solid #7B7B7B;
+    border-left: 2px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #7B7B7B;
 }
 
-/* If a cell is revealed, use that “Press Start” font & remove border */
-.revealed {
-  font-family: "Press Start";
-  background-color: #C0C0C0;
-  border: none !important;
-  font-size: 80%;
+button:hover {
+    background-color: lightgray;
+    color: slategray;
+    cursor: pointer;
 }
 
-/* If a cell is flagged, we’ll insert flagImage via innerHTML in JS */
-
-/* Disabled cells remain black and non-clickable */
-.disabled {
-  background-color: black !important;
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-/* The footer (fixed to bottom) */
-#footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #BFBFBF;
-  height: 40px;
-  padding: 0 10px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  font-size: 14px;
-}
-
-/* “Start” hat icon on left of footer */
-#start {
-  float: left;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* size buttons are hidden per your GitHub code */
-#size-btns {
-  float: left;
-  display: none;
-}
-
-/* The shift/long-press hint box */
 #clock {
-  font-family: "MS Sans Serif";
-  font-size: 14px;
-  display: inline-block;
-  border-top: 1.5px solid #808080;
-  border-left: 1.5px solid #808080;
-  border-bottom: 1.5px solid #FAFAFA;
-  border-right: 1.5px solid #FAFAFA;
-  width: 200px;
-  height: 22px;
-  margin: 2px;
-  padding: 5px;
+    font-family: 'MS Sans Serif';
+    font-size: 14px;
+    display: inline;
+    float: right;
+    border-top: 1.5px solid #808080;
+    border-left: 1.5px solid #808080;
+    border-right: 1.5px solid #FAFAFA;
+    border-bottom: 1.5px solid #FAFAFA;
+    /* height: 28px; */
+    width: 200px;
+    height: 22px;
+    margin: 2px;
+    padding: 5px;
 }
 
-/* Reset face button “🙂/😎/😵” */
+.flex-container {
+    display: flex;
+    justify-content: center;
+    margin: 80px 10px;
+}
+
+#folder1 {
+    display: inline;
+    padding-right: 10px;
+}
+
+#folder2 {
+    display: inline;
+    padding-right: 10px;
+}
+
+#folder-bar {
+    background-color: #D3CEC4;
+    border: none;
+    text-align: left;
+    padding: 2px 8px;
+}
+
+#footer {
+    display: flex;
+    justify-content: space-between; /* Space out elements */
+    align-items: center; /* Center items vertically */
+    background-color: #BFBFBF;
+    height: 40px; /* Adjust height */
+    padding: 5px 10px; /* Add padding around the footer content */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.menu a {
+    font-family: 'MS Sans Serif';
+    color: black;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
 #reset {
-  width: 35px;
-  height: 35px;
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-bottom: 2px solid #7B7B7B;
-  border-right: 2px solid #7B7B7B;
-  background-color: #C0C0C0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  margin: 0 10px;
-  cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border: 2px solid #7B7B7B;
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    margin: 0 10px; /* Add some spacing around the button */
+    background-color: #C0C0C0; /* Match board background */
+    font-size: 20px;
+}
+
+#reset img, #reset span {
+    display: block;
+    margin: auto;
+}
+
+.revealed {
+    font-family: "Press Start";
+    background-color: #C0C0C0;
+    font-size: 80%;
+    text-align: center;
+    border: none;
 }
 
 #reset:hover {
-  cursor: pointer;
+    text-align: center;
+    cursor: pointer;
 }
 
-/* Status bar inside the table’s header row */
+.sidebar {
+    vertical-align: top;
+    max-width: 300px;
+    margin: 0 30px;
+}
+.disabled {
+    background-color: black; /* Make the cell black */
+    pointer-events: none; /* Disable pointer interactions */
+    cursor: not-allowed; /* Show a disabled cursor */
+}
+
+.game-cell {
+    height: 20px;
+    width: 20px;
+    line-height: 20px; /* Align content vertically within the cell */
+    text-align: center;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.game-cell img, .game-cell span {
+    display: inline-block;
+    max-height: 100%; /* Scale the emoji to the cell size */
+    max-width: 100%;
+    vertical-align: middle; /* Align emoji in the middle */
+}
+
+#size-btns {
+    float: left;
+    display: inline;
+    margin: 2px;
+  display:none;
+}
+
+#start {
+    float: left;
+}
+
 #status-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: calc(100% - 10px); /* fit inside parent <td> */
-  padding: 4px;
-  margin: 0 auto;
-  border-top: 2px solid #7B7B7B;
-  border-left: 2px solid #7B7B7B;
-  border-bottom: 2px solid #ffffff;
-  border-right: 2px solid #ffffff;
-  background-color: #D3CEC4;
-  box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 10px); /* Adjust to fit within the parent container */
+    padding: 4px;
+    margin: 0 auto; /* Center the bar horizontally */
+    border: 2px solid #7B7B7B;
+    background-color: #D3CEC4;
+    box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
-/* Bomb‐counter and timer numbers */
-#timer,
-#bomb-counter {
-  font-family: "Digital Dismay";
-  font-size: 35px;
-  letter-spacing: 1px;
-  color: red;
-  background-color: black;
-  text-align: center;
-  padding: 4px 4px 0 7px;
-  line-height: 1em;
+td {
+    height: 20px;
+    width: 20px;
+    background-color: #C0C0C0;
+    border: 1.5px solid;
+    border-top-color: #ffffff;
+    border-right-color: #7B7B7B;
+    border-bottom-color: #7B7B7B;
+    border-left-color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
 }
 
-/* Menu bar row (gradient + title + controls) */
-#window-title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(
-    to right,
-    rgba(33, 41, 89, 1) 0%,
-    rgba(33, 41, 89, 1) 11%,
-    rgba(80, 114, 161, 1) 56%,
-    rgba(117, 172, 219, 0.7) 92%,
-    rgba(125, 185, 232, 0) 100%
-  );
-  color: #D5DEF3;
-  font-family: "MS Sans Serif";
-  font-size: 16px;
-  padding: 5px;
-  border: 2px solid #7B7B7B;
-  /* Ensures the bar spans the full width of the table cell */
-  width: 100%;
-  box-sizing: border-box;
+#timer, #bomb-counter {
+    font-family: 'Digital Dismay';
+    font-size: 35px;
+    letter-spacing: 1px;
+    color: red;
+    background-color: black;
+    text-align: center;
+    padding: 4px 4px 0 7px;
+    line-height: 1em;
 }
 
-/* Title text on the left of that gradient bar */
-#window-title {
-  float: left;
-  letter-spacing: 0.5px;
-}
-
-/* Controls icon on the right of that gradient bar */
 #window-controls {
-  float: right;
-  cursor: pointer;
+    float: right;
+    cursor: pointer;
 }
+
+#window-title {
+    font-family: 'MS Sans Serif';
+    letter-spacing: .5px;
+    float: left;
+    color: #D5DEF3;
+    font-size: 16px;
+}
+
+#window-title-bar {
+    background: linear-gradient(to right, rgba(33, 41, 89, 1) 0%, rgba(33, 41, 89, 1) 11%, rgba(80, 114, 161, 1) 56%, rgba(117, 172, 219, 0.7) 92%, rgba(125, 185, 232, 0) 100%);
+    color: #D5DEF3;
+    font-family: 'MS Sans Serif';
+    font-size: 16px;
+    padding: 5px;
+    border: 2px solid #7B7B7B;
+} 
