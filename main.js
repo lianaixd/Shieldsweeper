@@ -1,3 +1,7 @@
+/*---------------------------------------------
+  main.js  (updated)
+---------------------------------------------*/
+
 /*----- classes -----*/
 class Cell {
   constructor(row, col, board) {
@@ -7,7 +11,7 @@ class Cell {
     this.board = board;
     this.revealed = false;
     this.flagged = false;
-    this.disabled = false; // New property for disabled cells
+    this.disabled = false; // For “unselectable” cells
     this.adjBombs = 0;
   }
 
@@ -15,20 +19,27 @@ class Cell {
     const adj = [];
     const lastRow = this.board.length - 1;
     const lastCol = this.board[0].length - 1;
-    if (this.row > 0 && this.col > 0) adj.push(this.board[this.row - 1][this.col - 1]);
+    if (this.row > 0 && this.col > 0)
+      adj.push(this.board[this.row - 1][this.col - 1]);
     if (this.row > 0) adj.push(this.board[this.row - 1][this.col]);
-    if (this.row > 0 && this.col < lastCol) adj.push(this.board[this.row - 1][this.col + 1]);
+    if (this.row > 0 && this.col < lastCol)
+      adj.push(this.board[this.row - 1][this.col + 1]);
     if (this.col < lastCol) adj.push(this.board[this.row][this.col + 1]);
-    if (this.row < lastRow && this.col < lastCol) adj.push(this.board[this.row + 1][this.col + 1]);
+    if (this.row < lastRow && this.col < lastCol)
+      adj.push(this.board[this.row + 1][this.col + 1]);
     if (this.row < lastRow) adj.push(this.board[this.row + 1][this.col]);
-    if (this.row < lastRow && this.col > 0) adj.push(this.board[this.row + 1][this.col - 1]);
+    if (this.row < lastRow && this.col > 0)
+      adj.push(this.board[this.row + 1][this.col - 1]);
     if (this.col > 0) adj.push(this.board[this.row][this.col - 1]);
     return adj;
   }
 
   calcAdjBombs() {
     const adjCells = this.getAdjCells();
-    this.adjBombs = adjCells.reduce((acc, cell) => acc + (cell.bomb ? 1 : 0), 0);
+    this.adjBombs = adjCells.reduce(
+      (acc, cell) => acc + (cell.bomb ? 1 : 0),
+      0
+    );
   }
 
   flag() {
@@ -42,7 +53,7 @@ class Cell {
     if (this.revealed && !hitBomb) return;
     this.revealed = true;
     if (this.bomb) {
-      // Mark only this bomb as revealed
+      // Only this bomb is revealed
       return true;
     }
     if (this.adjBombs === 0) {
@@ -73,7 +84,6 @@ const fixedBombPositions = [
   { row: 11, col: 3 },
   { row: 12, col: 5 },
 ];
-
 const sizeLookup = {
   "14": { totalBombs: fixedBombPositions.length },
 };
@@ -92,7 +102,7 @@ const colors = [
   "#7A7A7A",
 ];
 
-/*----- app's state (variables) -----*/
+/*----- app’s state -----*/
 let size = 14;
 let board;
 let bombCount;
@@ -102,200 +112,25 @@ let elapsedTime;
 let timerId;
 let winner;
 
-/*----- cached element references -----*/
+/*----- cached DOM refs -----*/
 const boardEl = document.getElementById("board");
 
-// Audio (unchanged)
+// Audio files (unchanged)
 const tickSound = new Audio("tick.wav");
 const loseSound = new Audio("lose.wav");
 const winSound = new Audio("win.wav");
 tickSound.load();
 loseSound.load();
 winSound.load();
-
 function playSound(sound) {
   sound.currentTime = 0;
-  sound.play().catch((error) => {
-    console.error("Error playing sound:", error);
-  });
+  sound.play().catch((err) => {});
 }
 
-/*————————————————————————————————————————————————————————
-  DESKTOP CLICK HANDLER: click→reveal, Shift+Click→flag
-————————————————————————————————————————————————————————*/
-boardEl.addEventListener("click", function (e) {
-  if (winner || hitBomb) return;
-
-  // Identify the clicked <td> (ignore images inside)
-  const clickedEl =
-    e.target.tagName.toLowerCase() === "img"
-      ? e.target.parentElement
-      : e.target;
-  if (!clickedEl.classList.contains("game-cell")) return;
-
-  const row = parseInt(clickedEl.dataset.row, 10);
-  const col = parseInt(clickedEl.dataset.col, 10);
-  const cell = board[row][col];
-
-  if (cell.disabled) return;
-
-  if (!timerId) setTimer();
-
-  if (e.shiftKey && !cell.revealed && bombCount > 0) {
-    // Desktop flag
-    if (cell.flagged) {
-      cell.flagged = false;
-      bombCount++;
-    } else {
-      cell.flagged = true;
-      bombCount--;
-    }
-  } else {
-    // Desktop reveal
-    hitBomb = cell.reveal();
-    if (hitBomb) {
-      playSound(loseSound);
-      revealOnlyClickedBomb(row, col);
-      clearInterval(timerId);
-      clickedEl.style.backgroundColor = "red";
-    }
-  }
-
-  winner = checkWinner();
-  if (winner && !hitBomb) {
-    playSound(winSound);
-  } else if (!hitBomb) {
-    playSound(tickSound);
-  }
-
-  renderBoard();
-  updateStatusBar();
-});
-
-/*————————————————————————————————————————————————————————
-  RENDER BOARD + ATTACH TOUCH HANDLERS FOR MOBILE
-————————————————————————————————————————————————————————*/
-function renderBoard() {
-  boardEl.innerHTML = ""; // clear existing rows
-
-  board.forEach((rowArr) => {
-    const rowEl = document.createElement("tr");
-    rowArr.forEach((cell) => {
-      const cellEl = document.createElement("td");
-      cellEl.className = cell.disabled ? "disabled" : "game-cell";
-      cellEl.dataset.row = cell.row;
-      cellEl.dataset.col = cell.col;
-
-      if (cell.revealed) {
-        if (cell.bomb) {
-          cellEl.innerHTML = bombImage;
-        } else if (cell.adjBombs > 0) {
-          cellEl.classList.add("revealed");
-          cellEl.style.color = colors[cell.adjBombs];
-          cellEl.textContent = cell.adjBombs;
-        } else {
-          cellEl.classList.add("revealed");
-        }
-      } else if (cell.flagged) {
-        cellEl.innerHTML = flagImage;
-      }
-
-      /* MOBILE: long-press to toggle flag, tap to reveal */
-      attachTouchHandlers(cellEl);
-
-      rowEl.appendChild(cellEl);
-    });
-    boardEl.appendChild(rowEl);
-  });
-}
-
-/*————————————————————————————————————————————————————————
-  ATTACH TOUCH HANDLERS TO A SINGLE CELL
-   • Long‐press (≥500 ms): toggle flag  
-   • Quick tap: reveal  
-————————————————————————————————————————————————————————*/
-function attachTouchHandlers(cellEl) {
-  let touchTimer = null;
-  const row = parseInt(cellEl.dataset.row, 10);
-  const col = parseInt(cellEl.dataset.col, 10);
-
-  cellEl.addEventListener(
-    "touchstart",
-    (e) => {
-      e.preventDefault();
-      if (winner || hitBomb) return;
-      touchTimer = setTimeout(() => {
-        // LONG-PRESS → flag
-        toggleFlagAt(row, col);
-        renderBoard();
-        updateStatusBar();
-      }, 500);
-    },
-    { passive: false }
-  );
-
-  cellEl.addEventListener(
-    "touchend",
-    (e) => {
-      e.preventDefault();
-      if (winner || hitBomb) return;
-      if (touchTimer) {
-        // SHORT TAP → reveal
-        clearTimeout(touchTimer);
-        touchTimer = null;
-
-        if (!timerId) setTimer();
-        const cell = board[row][col];
-        if (cell.disabled) return;
-
-        hitBomb = cell.reveal();
-        if (hitBomb) {
-          playSound(loseSound);
-          revealOnlyClickedBomb(row, col);
-          clearInterval(timerId);
-          cellEl.style.backgroundColor = "red";
-        } else {
-          playSound(tickSound);
-        }
-
-        winner = checkWinner();
-        if (winner && !hitBomb) playSound(winSound);
-
-        renderBoard();
-        updateStatusBar();
-      }
-    },
-    { passive: false }
-  );
-
-  cellEl.addEventListener("touchmove", () => {
-    // if finger moves, cancel the long-press
-    if (touchTimer) {
-      clearTimeout(touchTimer);
-      touchTimer = null;
-    }
-  });
-}
-
-/* Toggle flag at (r,c) – MOBILE variant of Shift+Click */
-function toggleFlagAt(r, c) {
-  const cell = board[r][c];
-  if (cell.revealed || cell.disabled) return;
-  if (cell.flagged) {
-    cell.flagged = false;
-    bombCount++;
-  } else if (bombCount > 0) {
-    cell.flagged = true;
-    bombCount--;
-  }
-}
-
-/*————————————————————————————————————————————————————————
-  BUILD & INITIALIZE BOARD
-————————————————————————————————————————————————————————*/
+/*————— BUILD THE TABLE’S HEADER + EMPTY CELLS —————*/
 function buildTable() {
-  // Insert status bar rows at the top
-  const topRow = `
+  // 1) Insert the top‐three “header” rows exactly as before:
+  const topRows = `
     <tr>
       <td class="menu" id="window-title-bar" colspan="${size}">
         <div id="window-title">🛡️ Shieldsweeper</div>
@@ -315,9 +150,9 @@ function buildTable() {
       </td>
     </tr>
   `;
-  boardEl.innerHTML = topRow;
+  boardEl.innerHTML = topRows;
 
-  // Then append size×size empty <td class="game-cell"></td>
+  // 2) Now append size × size “empty” <td> cells:
   for (let r = 0; r < size; r++) {
     const tr = document.createElement("tr");
     for (let c = 0; c < size; c++) {
@@ -330,22 +165,23 @@ function buildTable() {
     boardEl.appendChild(tr);
   }
 
+  // 3) “🙂” reset listener
   createResetListener();
 }
 
+/*————— BUILD THE BOARD DATA (Cell instances) —————*/
 function buildArrays() {
-  const arr = Array(size).fill(null).map(() => Array(size).fill(null));
-  return arr;
+  return Array(size)
+    .fill(null)
+    .map(() => Array(size).fill(null));
 }
-
 function buildCells() {
-  board.forEach((rowArr, rowIdx) => {
-    rowArr.forEach((_, colIdx) => {
-      board[rowIdx][colIdx] = new Cell(rowIdx, colIdx, board);
+  board.forEach((rowArr, r) => {
+    rowArr.forEach((_, c) => {
+      board[r][c] = new Cell(r, c, board);
     });
   });
-
-  // Disable specific cells
+  // Mark disabled cells:
   const disabledCells = [
     { row: 0, cols: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
     { row: 1, cols: [4, 5, 6, 7, 8, 9, 10] },
@@ -362,7 +198,6 @@ function buildCells() {
     { row: 12, cols: [7, 8, 9, 10, 11, 12, 13] },
     { row: 13, cols: [0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
   ];
-
   disabledCells.forEach(({ row, cols }) => {
     cols.forEach((col) => {
       board[row][col].disabled = true;
@@ -373,6 +208,9 @@ function buildCells() {
   runCodeForAllCells((cell) => cell.calcAdjBombs());
 }
 
+/*————————————————————————————————————————————————————————
+  INITIALIZE OR “RESET” THE GAME
+————————————————————————————————————————————————————————*/
 function init() {
   buildTable();
   board = buildArrays();
@@ -383,55 +221,197 @@ function init() {
   timerId = null;
   hitBomb = false;
   winner = false;
-
-  // Finally render the freshly built board:
-  renderBoard();
+  renderBoard(); // Draw the cells
   updateStatusBar();
 }
 
-function getBombCount() {
-  let count = 0;
-  board.forEach((row) => {
-    row.forEach((cell) => {
-      if (cell.bomb) count++;
+/*————————————————————————————————————————————————————————
+  RENDER ONLY THE BODY ROWS (rows 4+).  Keep top‐3 headers intact.
+————————————————————————————————————————————————————————*/
+function renderBoard() {
+  // Remove any existing “body” rows (all <tr> beyond the first 3):
+  while (boardEl.rows.length > 3) {
+    boardEl.deleteRow(3);
+  }
+
+  // Rebuild each row of cells:
+  board.forEach((rowArr, r) => {
+    const tr = boardEl.insertRow(-1); // append at bottom
+    rowArr.forEach((cell) => {
+      const td = tr.insertCell(-1);
+      td.className = cell.disabled ? "disabled" : "game-cell";
+      td.dataset.row = cell.row;
+      td.dataset.col = cell.col;
+
+      if (cell.revealed) {
+        if (cell.bomb) {
+          td.innerHTML = bombImage;
+        } else if (cell.adjBombs > 0) {
+          td.classList.add("revealed");
+          td.style.color = colors[cell.adjBombs];
+          td.textContent = cell.adjBombs;
+        } else {
+          td.classList.add("revealed");
+        }
+      } else if (cell.flagged) {
+        td.innerHTML = flagImage;
+      }
+
+      // Attach mobile “long‐press / tap” handlers:
+      attachTouchHandlers(td);
     });
   });
-  return count;
 }
 
-function addBombs() {
-  fixedBombPositions.forEach(({ row, col }) => {
-    board[row][col].bomb = true;
+/*————————————————————————————————————————————————————————
+  DESKTOP CLICK: reveal (no Shift) or flag (with Shift)
+————————————————————————————————————————————————————————*/
+boardEl.addEventListener("click", (e) => {
+  if (winner || hitBomb) return;
+  // Identify the clicked <td>
+  const clickedEl =
+    e.target.tagName.toLowerCase() === "img"
+      ? e.target.parentElement
+      : e.target;
+  if (!clickedEl.classList.contains("game-cell")) return;
+
+  const r = parseInt(clickedEl.dataset.row, 10);
+  const c = parseInt(clickedEl.dataset.col, 10);
+  const cell = board[r][c];
+  if (cell.disabled) return;
+
+  if (!timerId) setTimer();
+
+  if (e.shiftKey && !cell.revealed && bombCount > 0) {
+    // Desktop: toggle flag
+    if (cell.flagged) {
+      cell.flagged = false;
+      bombCount++;
+    } else {
+      cell.flagged = true;
+      bombCount--;
+    }
+  } else {
+    // Desktop: reveal
+    hitBomb = cell.reveal();
+    if (hitBomb) {
+      playSound(loseSound);
+      revealOnlyClickedBomb(r, c);
+      clearInterval(timerId);
+      clickedEl.style.backgroundColor = "red";
+    } else {
+      playSound(tickSound);
+    }
+  }
+
+  winner = checkWinner();
+  if (winner && !hitBomb) playSound(winSound);
+
+  renderBoard();
+  updateStatusBar();
+});
+
+/*————————————————————————————————————————————————————————
+  MOBILE: long‐press (≥ 500 ms) toggles flag; quick tap reveals
+————————————————————————————————————————————————————————*/
+function attachTouchHandlers(cellEl) {
+  let touchTimer = null;
+  const r = parseInt(cellEl.dataset.row, 10);
+  const c = parseInt(cellEl.dataset.col, 10);
+
+  cellEl.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      if (winner || hitBomb) return;
+      touchTimer = setTimeout(() => {
+        // LONG‐PRESS → toggle flag
+        toggleFlagAt(r, c);
+        renderBoard();
+        updateStatusBar();
+      }, 500);
+    },
+    { passive: false }
+  );
+
+  cellEl.addEventListener(
+    "touchend",
+    (e) => {
+      e.preventDefault();
+      if (winner || hitBomb) return;
+      if (touchTimer) {
+        clearTimeout(touchTimer);
+        touchTimer = null;
+        // SHORT TAP → reveal
+        if (!timerId) setTimer();
+        const cell = board[r][c];
+        if (cell.disabled) return;
+
+        hitBomb = cell.reveal();
+        if (hitBomb) {
+          playSound(loseSound);
+          revealOnlyClickedBomb(r, c);
+          clearInterval(timerId);
+          cellEl.style.backgroundColor = "red";
+        } else {
+          playSound(tickSound);
+        }
+        winner = checkWinner();
+        if (winner && !hitBomb) playSound(winSound);
+
+        renderBoard();
+        updateStatusBar();
+      }
+    },
+    { passive: false }
+  );
+
+  cellEl.addEventListener("touchmove", () => {
+    // cancel long‐press if finger moves away
+    if (touchTimer) {
+      clearTimeout(touchTimer);
+      touchTimer = null;
+    }
   });
 }
 
-function checkWinner() {
-  return board.flat().every((c) => c.bomb || c.revealed || c.disabled);
+function toggleFlagAt(r, c) {
+  const cell = board[r][c];
+  if (cell.revealed || cell.disabled) return;
+  if (cell.flagged) {
+    cell.flagged = false;
+    bombCount++;
+  } else if (bombCount > 0) {
+    cell.flagged = true;
+    bombCount--;
+  }
 }
 
+/*————————————————————————————————————————————————————————
+  REVEAL ONLY THE CLICKED BOMB (when user hits a bomb)
+————————————————————————————————————————————————————————*/
 function revealOnlyClickedBomb(clickedRow, clickedCol) {
-  board.forEach((rowArr, r) => {
-    rowArr.forEach((cell, c) => {
+  board.forEach((rowArr, rr) => {
+    rowArr.forEach((cell, cc) => {
       if (cell.bomb) {
-        cell.revealed = r === clickedRow && c === clickedCol;
+        cell.revealed = rr === clickedRow && cc === clickedCol;
       }
     });
   });
 }
 
 /*————————————————————————————————————————————————————————
-  UPDATE STATUS BAR (bomb count, reset face, timer)
+  UPDATE STATUS BAR (bomb‐count, reset face, timer)
 ————————————————————————————————————————————————————————*/
 function updateStatusBar() {
   document.getElementById("bomb-counter").innerText = String(bombCount).padStart(3, "0");
-  const resetEl = document.getElementById("reset");
+  const face = document.getElementById("reset");
   if (hitBomb) {
-    resetEl.innerHTML = "😵";
+    face.innerHTML = "😵";
   } else if (winner) {
-    resetEl.innerHTML = "😎";
+    face.innerHTML = "😎";
     clearInterval(timerId);
-
-    // On win, place 🗝️ and 🛡️
+    // place key + shield on win
     const keyCell = document.querySelector('[data-row="5"][data-col="12"]');
     if (keyCell) {
       keyCell.innerHTML = '<span style="font-size:16px;">🗝️</span>';
@@ -445,18 +425,50 @@ function updateStatusBar() {
   }
 }
 
+/*————————————————————————————————————————————————————————
+  CHECK FOR WIN (all non‐bomb, non‐disabled squares revealed)
+————————————————————————————————————————————————————————*/
+function checkWinner() {
+  return board.flat().every((c) => c.bomb || c.revealed || c.disabled);
+}
+
+/*————————————————————————————————————————————————————————
+  ADD BOMBS TO FIXED POSITIONS
+————————————————————————————————————————————————————————*/
+function addBombs() {
+  fixedBombPositions.forEach(({ row, col }) => {
+    board[row][col].bomb = true;
+  });
+}
+
+function getBombCount() {
+  let cnt = 0;
+  board.forEach((rowArr) => {
+    rowArr.forEach((c) => {
+      if (c.bomb) cnt++;
+    });
+  });
+  return cnt;
+}
+
 function runCodeForAllCells(cb) {
   board.forEach((rowArr) => {
     rowArr.forEach((cell) => cb(cell));
   });
 }
 
+/*————————————————————————————————————————————————————————
+  RESET LISTENER (🙂 button)
+————————————————————————————————————————————————————————*/
 function createResetListener() {
-  document.getElementById("reset").addEventListener("click", function () {
+  document.getElementById("reset").addEventListener("click", () => {
     init();
   });
 }
 
+/*————————————————————————————————————————————————————————
+  TIMER (once first click or first tap)
+————————————————————————————————————————————————————————*/
 function setTimer() {
   timerId = setInterval(() => {
     elapsedTime += 1;
@@ -464,7 +476,9 @@ function setTimer() {
   }, 1000);
 }
 
-// Start the very first game:
+/*————————————————————————————————————————————————————————
+  INITIALIZE THE VERY FIRST GAME
+————————————————————————————————————————————————————————*/
 document.addEventListener("DOMContentLoaded", () => {
   init();
 });
