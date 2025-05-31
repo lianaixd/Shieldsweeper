@@ -193,7 +193,7 @@ function revealAll(clickedRow, clickedCol) {
 }
 
 function buildTable() {
-    var topRow = 
+    var topRow = `
     <tr>
       <td class="menu" id="window-title-bar" colspan="${size}">
         <div id="window-title">🛡️ Shieldsweeper</div>
@@ -212,7 +212,7 @@ function buildTable() {
             </section>
         </td>
       </tr>
-    ;
+    ` ;
     boardEl.innerHTML = topRow + <tr>${'<td class="game-cell"></td>'.repeat(size)}</tr>.repeat(size);
     boardEl.style.width = sizeLookup[size].tableWidth;
     createResetListener();
